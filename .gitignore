@@ -1,0 +1,21 @@
+# Logs
+*.log
+classifier.log
+
+# Checkpoints and partial output
+checkpoint.json
+checkpoint.json.tmp
+
+# Output files (generated at runtime)
+classified_schools_*.xlsx
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
