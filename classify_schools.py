@@ -580,18 +580,22 @@ def main() -> None:
 
     missing = [
         label for label, val in [
-            ("School ID", id_col), ("School Name", name_col), ("Primary Domain", domain_col)
+            ("School ID", id_col), ("Primary Domain", domain_col)
         ] if not val
     ]
     if missing:
         logger.error(
             f"Could not auto-detect columns: {missing}\n"
             f"Available columns: {cols}\n"
-            f"Use --school-id-col / --school-name-col / --domain-col to specify them."
+            f"Use --school-id-col / --domain-col to specify them."
         )
         sys.exit(1)
 
-    logger.info(f"Columns → ID: '{id_col}' | Name: '{name_col}' | Domain: '{domain_col}'")
+    # School Name is optional — fall back to School ID
+    if not name_col:
+        logger.info("No 'School Name' column found — School ID will be used as display name.")
+
+    logger.info(f"Columns → ID: '{id_col}' | Name: '{name_col or '(none)'}' | Domain: '{domain_col}'")
 
     if args.limit:
         df_input = df_input.head(args.limit)
@@ -610,7 +614,7 @@ def main() -> None:
 
     for idx, row in df_input.iterrows():
         school_id = str(row.get(id_col, "")).strip()
-        school_name = str(row.get(name_col, "")).strip()
+        school_name = str(row.get(name_col, school_id)).strip() if name_col else school_id
         domain = str(row.get(domain_col, "")).strip()
 
         # Already in checkpoint?
